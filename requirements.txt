@@ -1,2 +1,4 @@
 dbus-python
+asyncio
+PyGObject
 https://github.com/qwertyquerty/pypresence/archive/master.zip
