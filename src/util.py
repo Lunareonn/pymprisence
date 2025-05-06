@@ -1,6 +1,5 @@
 import dbus
 import dbus.mainloop.glib
-from gi.repository import GLib
 
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 bus = dbus.SessionBus()
