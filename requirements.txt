@@ -2,4 +2,6 @@ dbus-python
 asyncio
 PyGObject
 requests
+diskcache
+xxhash
 https://github.com/qwertyquerty/pypresence/archive/master.zip
