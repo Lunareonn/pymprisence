@@ -19,7 +19,16 @@ async def initialize_rpc(event):
 
 async def rpc_loop(event, RPC):
     await event.wait()
+    last_song = None
+
     while True:
+        current_song = util.get_trackid()
+        if current_song == last_song:
+            await asyncio.sleep(5)
+            continue
+
+        last_song = current_song
+
         state = util.get_state()
         if state in ["Paused", "Stopped"]:
             print(state)
