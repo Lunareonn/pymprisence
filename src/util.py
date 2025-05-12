@@ -69,3 +69,10 @@ def get_position():
 def get_state():
     state = properties.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
     return state
+
+
+def get_trackid():
+    metadata = properties.Get("org.mpris.MediaPlayer2.Player", "Metadata")
+    trackid = metadata.get("mpris:trackid")
+
+    return trackid
