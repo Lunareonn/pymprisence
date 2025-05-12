@@ -1,5 +1,4 @@
 import dbus
-import requests
 import base64
 import dbus.mainloop.glib
 import urllib.parse

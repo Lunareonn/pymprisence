@@ -1,6 +1,3 @@
-from pypresence import Presence, ActivityType
-from gi.repository import GLib
-from signal_handler import listener
 import asyncio
 import presence
 
