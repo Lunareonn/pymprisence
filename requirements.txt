@@ -3,5 +3,6 @@ asyncio
 PyGObject
 requests
 diskcache
+aiohttp
 xxhash
 https://github.com/qwertyquerty/pypresence/archive/master.zip
