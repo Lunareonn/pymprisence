@@ -6,11 +6,16 @@ import time
 import diskcache
 import json
 import xxhash
+from configuration import config_folder
+import tomllib
+import os
 
 
 async def initialize_rpc(event):
-    client_id = "1366680558775570504"
-    RPC = AioPresence(client_id)
+    with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
+        cfg_file = tomllib.load(cfg)
+    app_id = cfg_file["discord"]["app_id"]
+    RPC = AioPresence(app_id)
     await RPC.connect()
     print("connected rpc")
     event.set()
