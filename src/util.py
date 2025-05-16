@@ -4,6 +4,7 @@ import dbus.mainloop.glib
 import urllib.parse
 from diskcache import Cache
 import json
+
 import xxhash
 import aiohttp
 
@@ -15,6 +16,12 @@ bus = dbus.SessionBus()
 player = bus.get_object("org.mpris.MediaPlayer2.strawberry",
                         "/org/mpris/MediaPlayer2")
 properties = dbus.Interface(player, "org.freedesktop.DBus.Properties")
+
+
+async def get_players():
+    players = [service for service in bus.list_names(
+    ) if service.startswith("org.mpris.MediaPlayer2.")]
+    return players
 
 
 async def cache_cover(file: str, url: str):
