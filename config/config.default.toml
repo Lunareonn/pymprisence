@@ -1,0 +1,33 @@
+[discord]
+# How often the presence updates. Min: 5 | Default: 10
+interval = 10
+# Default activity type. You can override this per-player. Default: listening
+# Accepted values:
+#   "listening"
+#   "watching"
+#   "playing"
+#   "competing"
+activity_type = "listening"
+
+[cover_art]
+# This is required to show cover art.
+# Get an api key from: https://api.imgbb.com/
+# imgbb_api_key = "api_key_here"
+
+
+[player.example]
+# Example player configuration
+# Accepted fields:
+#   ignore: Ignore (or don't) specified player
+#   activity_type: Player specific activity type.
+#
+# Use "pymprisence -l" to see current players.
+ignore = true
+
+[player.strawberry]
+ignore = false
+activity_type = "listening"
+
+[player.mozilla_firefox]
+ignore = true
+activity_type = "watching"
