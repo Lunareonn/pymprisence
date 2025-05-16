@@ -4,8 +4,10 @@ import dbus.mainloop.glib
 import urllib.parse
 from diskcache import Cache
 import json
-
+import tomllib
+from configuration import config_folder
 import xxhash
+import os
 import aiohttp
 
 cache = Cache("./cache")
@@ -22,6 +24,27 @@ async def get_players():
     players = [service for service in bus.list_names(
     ) if service.startswith("org.mpris.MediaPlayer2.")]
     return players
+
+
+async def check_if_ignored(player):
+    with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
+        cfg_file = tomllib.load(cfg)
+
+    normal_player = player.replace("org.mpris.MediaPlayer2.", "")
+
+    if normal_player == "playerctld":
+        return
+
+    try:
+        if cfg_file["player"][normal_player]["ignore"] is True:
+            return True
+    except KeyError:
+        if cfg_file["player"]["default"]["ignore"] is True:
+            return True
+        else:
+            return False
+
+    return False
 
 
 async def cache_cover(file: str, url: str):
