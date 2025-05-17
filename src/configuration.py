@@ -8,16 +8,13 @@ async def check_config() -> bool:
     if os.path.isfile(os.path.join(config_folder, "pymprisence", "config.toml")):
         return True
     else:
-        print(os.path.join(config_folder, "pymprisence", "config.toml"))
         return False
 
 
 async def generate_config():
     if await check_config() is True:
-        print("config file found")
         return
     else:
-        print("config file not found")
         if not os.path.isdir(os.path.join(config_folder, "pymprisence")):
             os.makedirs(os.path.join(config_folder, "pymprisence"))
 
