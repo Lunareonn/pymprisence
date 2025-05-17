@@ -30,6 +30,6 @@ ignore = true
 ignore = false
 activity_type = "listening"
 
-[player.mozilla_firefox]
+[player.firefox]
 ignore = true
 activity_type = "watching"
