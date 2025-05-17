@@ -28,22 +28,23 @@ async def rpc_loop(event, RPC):
     last_song = None
 
     while True:
-        current_song = util.get_trackid()
+        player = await util.get_current_player()
+        current_song = util.get_trackid(player)
         if current_song == last_song:
             await asyncio.sleep(5)
             continue
 
         last_song = current_song
 
-        state = util.get_state()
+        state = util.get_state(player)
         if state in ["Paused", "Stopped"]:
             print(state)
             await RPC.clear()
             await asyncio.sleep(5)
             continue
 
-        song_title, song_artist, song_length, cover_path = util.get_metadata()
-        position = util.get_position()
+        song_title, song_artist, song_length, cover_path = util.get_metadata(player)
+        position = util.get_position(player)
 
         file_hash = xxhash.xxh64(Path(cover_path).read_bytes()).hexdigest()
         cache = diskcache.Cache("./cache")
