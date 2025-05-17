@@ -9,12 +9,18 @@ from dbus_connection import DBusSession
 import xxhash
 import os
 import aiohttp
+import re
 
 cache = Cache("./cache")
 
 
-async def sanitize_player_name(player) -> str:
-    pass
+def sanitize_player_name(player: str) -> str:
+    print(player)
+    player = player.replace("org.mpris.MediaPlayer2.", "")
+    print(player)
+    sanitized_player = re.sub(r"\..*$", "", player)
+    print(sanitized_player)
+    return sanitized_player
 
 
 async def get_players() -> list:
@@ -54,13 +60,13 @@ def check_if_ignored(player) -> bool:
     with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
         cfg_file = tomllib.load(cfg)
 
-    normal_player = player.replace("org.mpris.MediaPlayer2.", "")
+    sanitized_player = sanitize_player_name(player)
 
-    if normal_player == "playerctld":
+    if sanitized_player == "playerctld":
         return True
 
     try:
-        if cfg_file["player"][normal_player]["ignore"] is True:
+        if cfg_file["player"][sanitized_player]["ignore"] is True:
             return True
     except KeyError:
         if cfg_file["player"]["default"]["ignore"] is True:
