@@ -1,4 +1,5 @@
-from pypresence import AioPresence, ActivityType
+from pypresence.presence import AioPresence
+from pypresence.types import ActivityType
 from pathlib import Path
 import asyncio
 import util
@@ -48,7 +49,7 @@ async def rpc_loop(event, RPC):
         cache = diskcache.Cache("./cache")
         if file_hash in cache:
             print("fetching cover from cache")
-            data = json.loads(cache.get(file_hash))
+            data = json.loads(str(cache.get(file_hash)))
             cover_url = data.get("cover_url")
         else:
             print("uploading cover to imgbb")

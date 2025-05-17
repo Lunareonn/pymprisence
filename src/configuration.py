@@ -4,7 +4,7 @@ import os
 config_folder = os.path.join(os.path.expanduser("~"), ".config")
 
 
-async def check_config():
+async def check_config() -> bool:
     if os.path.isfile(os.path.join(config_folder, "pymprisence", "config.toml")):
         return True
     else:

@@ -15,25 +15,28 @@ cache = Cache("./cache")
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 bus = dbus.SessionBus()
 
-player = bus.get_object("org.mpris.MediaPlayer2.strawberry",
+player = bus.get_object("org.mpris.MediaPlayer2.sayonara",
                         "/org/mpris/MediaPlayer2")
 properties = dbus.Interface(player, "org.freedesktop.DBus.Properties")
 
 
-async def get_players():
-    players = [service for service in bus.list_names(
-    ) if service.startswith("org.mpris.MediaPlayer2.")]
+async def get_players() -> list:
+    names = bus.list_names()
+    if names is None:
+        return []
+
+    players = [service for service in names if service.startswith("org.mpris.MediaPlayer2.")]
     return players
 
 
-async def check_if_ignored(player):
+async def check_if_ignored(player) -> bool:
     with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
         cfg_file = tomllib.load(cfg)
 
     normal_player = player.replace("org.mpris.MediaPlayer2.", "")
 
     if normal_player == "playerctld":
-        return
+        return True
 
     try:
         if cfg_file["player"][normal_player]["ignore"] is True:
@@ -60,7 +63,7 @@ async def cache_cover(file: str, url: str):
     cache.set(hasher.hexdigest(), json.dumps(data_json))
 
 
-async def upload_imgbb(file: str, track: str, artist: str):
+async def upload_imgbb(file: str, track: str, artist: str) -> str:
     api_key = "d62a1f991e1c733a1d39afb9854802c7"
     url = "https://api.imgbb.com/1/upload"
 
@@ -79,7 +82,7 @@ async def upload_imgbb(file: str, track: str, artist: str):
             return data["data"]["image"]["url"]
 
 
-def get_metadata():
+def get_metadata() -> tuple:
     metadata = properties.Get("org.mpris.MediaPlayer2.Player", "Metadata")
 
     song_title = metadata.get("xesam:title", "Unknown Title")
@@ -90,18 +93,18 @@ def get_metadata():
     return song_title, song_artist, song_length, cover_path
 
 
-def get_position():
+def get_position() -> int:
     position = properties.Get("org.mpris.MediaPlayer2.Player", "Position")
 
     return round(position / 1000000)
 
 
-def get_state():
+def get_state() -> str:
     state = properties.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
     return state
 
 
-def get_trackid():
+def get_trackid() -> str:
     metadata = properties.Get("org.mpris.MediaPlayer2.Player", "Metadata")
     trackid = metadata.get("mpris:trackid")
 
