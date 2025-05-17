@@ -1,26 +1,24 @@
 import dbus
 import base64
-import dbus.mainloop.glib
 import urllib.parse
 from diskcache import Cache
 import json
 import tomllib
 from configuration import config_folder
+from dbus_connection import DBusSession
 import xxhash
 import os
 import aiohttp
 
 cache = Cache("./cache")
 
-dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-bus = dbus.SessionBus()
 
-player = bus.get_object("org.mpris.MediaPlayer2.sayonara",
-                        "/org/mpris/MediaPlayer2")
-properties = dbus.Interface(player, "org.freedesktop.DBus.Properties")
+async def sanitize_player_name(player) -> str:
+    pass
 
 
 async def get_players() -> list:
+    bus = DBusSession.get_bus()
     names = bus.list_names()
     if names is None:
         return []
@@ -29,7 +27,30 @@ async def get_players() -> list:
     return players
 
 
-async def check_if_ignored(player) -> bool:
+async def get_current_player() -> str | None:
+    bus = DBusSession.get_bus()
+    players = await get_players()
+
+    for player in players:
+        try:
+            proxy = bus.get_object(player, "/org/mpris/MediaPlayer2")
+            interface = dbus.Interface(proxy, "org.freedesktop.DBus.Properties")
+            status = interface.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
+            print(player, "status:", status)
+
+            if check_if_ignored(player) is True or status in ["Stopped", "Paused"]:
+                continue
+
+            if status == "Playing":
+                return player
+
+        except dbus.DBusException:
+            continue
+
+    return None
+
+
+def check_if_ignored(player) -> bool:
     with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
         cfg_file = tomllib.load(cfg)
 
@@ -82,7 +103,11 @@ async def upload_imgbb(file: str, track: str, artist: str) -> str:
             return data["data"]["image"]["url"]
 
 
-def get_metadata() -> tuple:
+def get_metadata(player) -> tuple:
+    bus = DBusSession.get_bus()
+    player = bus.get_object(player,
+                            "/org/mpris/MediaPlayer2")
+    properties = dbus.Interface(player, "org.freedesktop.DBus.Properties")
     metadata = properties.Get("org.mpris.MediaPlayer2.Player", "Metadata")
 
     song_title = metadata.get("xesam:title", "Unknown Title")
@@ -93,18 +118,31 @@ def get_metadata() -> tuple:
     return song_title, song_artist, song_length, cover_path
 
 
-def get_position() -> int:
+def get_position(player) -> int:
+    bus = DBusSession.get_bus()
+    player = bus.get_object(player,
+                            "/org/mpris/MediaPlayer2")
+    properties = dbus.Interface(player, "org.freedesktop.DBus.Properties")
     position = properties.Get("org.mpris.MediaPlayer2.Player", "Position")
 
     return round(position / 1000000)
 
 
-def get_state() -> str:
+def get_state(player) -> str:
+    bus = DBusSession.get_bus()
+    player = bus.get_object(player,
+                            "/org/mpris/MediaPlayer2")
+    properties = dbus.Interface(player, "org.freedesktop.DBus.Properties")
     state = properties.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
     return state
 
 
-def get_trackid() -> str:
+def get_trackid(player) -> str:
+    bus = DBusSession.get_bus()
+    player = bus.get_object(player,
+                            "/org/mpris/MediaPlayer2")
+    properties = dbus.Interface(player, "org.freedesktop.DBus.Properties")
+
     metadata = properties.Get("org.mpris.MediaPlayer2.Player", "Metadata")
     trackid = metadata.get("mpris:trackid")
 
