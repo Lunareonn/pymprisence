@@ -15,11 +15,8 @@ cache = Cache("./cache")
 
 
 def sanitize_player_name(player: str) -> str:
-    print(player)
     player = player.replace("org.mpris.MediaPlayer2.", "")
-    print(player)
     sanitized_player = re.sub(r"\..*$", "", player)
-    print(sanitized_player)
     return sanitized_player
 
 
@@ -42,7 +39,6 @@ async def get_current_player() -> str | None:
             proxy = bus.get_object(player, "/org/mpris/MediaPlayer2")
             interface = dbus.Interface(proxy, "org.freedesktop.DBus.Properties")
             status = interface.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
-            print(player, "status:", status)
 
             if check_if_ignored(player) is True or status in ["Stopped", "Paused"]:
                 continue
@@ -82,7 +78,6 @@ async def cache_cover(file: str, url: str):
     with open(str(file), "rb") as f:
         while chunk := f.read(1048576):
             hasher.update(chunk)
-        print(hasher.hexdigest())
 
     data_json = {
         "cover_url": url
@@ -103,8 +98,6 @@ async def upload_imgbb(file: str, track: str, artist: str) -> str:
 
         async with session.post(url, data=payload) as response:
             data = await response.json()
-            print("image uploaded, hopefully async")
-            print(data)
             await cache_cover(file, data["data"]["image"]["url"])
             return data["data"]["image"]["url"]
 
