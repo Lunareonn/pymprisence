@@ -5,4 +5,5 @@ requests
 diskcache
 aiohttp
 xxhash
+toml
 https://github.com/qwertyquerty/pypresence/archive/master.zip
