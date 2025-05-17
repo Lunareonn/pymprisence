@@ -1,5 +1,6 @@
 from pypresence.presence import AioPresence
 from pypresence.types import ActivityType
+from configuration import config_folder
 from pathlib import Path
 import asyncio
 import util
@@ -7,7 +8,6 @@ import time
 import diskcache
 import json
 import xxhash
-from configuration import config_folder
 import tomllib
 import os
 

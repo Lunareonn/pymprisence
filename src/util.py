@@ -1,11 +1,11 @@
+from configuration import config_folder
+from dbus_connection import DBusSession
+from diskcache import Cache
 import dbus
 import base64
 import urllib.parse
-from diskcache import Cache
 import json
 import tomllib
-from configuration import config_folder
-from dbus_connection import DBusSession
 import xxhash
 import os
 import aiohttp
