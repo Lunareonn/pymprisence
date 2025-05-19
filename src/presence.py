@@ -32,6 +32,7 @@ async def rpc_loop(event, RPC):
         if player is None:
             await asyncio.sleep(5)
             continue
+
         current_song = util.get_trackid(player)
         if current_song == last_song:
             await asyncio.sleep(5)

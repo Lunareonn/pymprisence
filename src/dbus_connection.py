@@ -1,5 +1,4 @@
 import dbus
-# import dbus.mainloop.glib
 
 
 class DBusSession:
