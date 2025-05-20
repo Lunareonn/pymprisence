@@ -1,4 +1,18 @@
 import logging
+import os
+from datetime import datetime
+import tomllib
+
+home_folder = os.path.expanduser("~")
+os.makedirs(os.path.join(home_folder, ".pymprisence"), exist_ok=True)
+
+try:
+    with open(os.path.join(home_folder, ".config", "pymprisence", "config.toml"), "rb") as cfg:
+        cfg_file = tomllib.load(cfg)
+
+    logger_level = cfg_file["logger"]["logging_level"]
+except FileNotFoundError:
+    logger_level = "INFO"
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -11,7 +25,10 @@ logger.addHandler(console_handler)
 
 
 file_formatter = logging.Formatter("%(asctime)s %(levelname)s [%(filename)s:%(lineno)d] %(message)s")
-file_handler = logging.FileHandler("test.log", mode="w", encoding="utf-8")
+file_handler = logging.FileHandler(f"{home_folder}/.pymprisence/{datetime.now().replace(microsecond=0).strftime("%d-%m-%Y-%H-%M-%S")}.log", mode="w", encoding="utf-8")
 file_handler.setFormatter(file_formatter)
-file_handler.setLevel(logging.DEBUG)
+if logger_level == "DEBUG":
+    file_handler.setLevel(logging.DEBUG)
+elif logger_level == "INFO":
+    file_handler.setLevel(logging.INFO)
 logger.addHandler(file_handler)
