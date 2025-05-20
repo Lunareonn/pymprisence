@@ -4,7 +4,7 @@ from datetime import datetime
 import tomllib
 
 home_folder = os.path.expanduser("~")
-os.makedirs(os.path.join(home_folder, ".pymprisence"), exist_ok=True)
+os.makedirs(os.path.join(home_folder, ".pymprisence", "logs"), exist_ok=True)
 
 try:
     with open(os.path.join(home_folder, ".config", "pymprisence", "config.toml"), "rb") as cfg:
@@ -25,7 +25,7 @@ logger.addHandler(console_handler)
 
 
 file_formatter = logging.Formatter("%(asctime)s %(levelname)s [%(filename)s:%(lineno)d] %(message)s")
-file_handler = logging.FileHandler(f"{home_folder}/.pymprisence/{datetime.now().replace(microsecond=0).strftime("%d-%m-%Y-%H-%M-%S")}.log", mode="w", encoding="utf-8")
+file_handler = logging.FileHandler(f"{home_folder}/.pymprisence/logs/{datetime.now().replace(microsecond=0).strftime("%d-%m-%Y-%H-%M-%S")}.log", mode="w", encoding="utf-8")
 file_handler.setFormatter(file_formatter)
 if logger_level == "DEBUG":
     file_handler.setLevel(logging.DEBUG)
