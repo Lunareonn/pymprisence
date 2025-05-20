@@ -2,6 +2,7 @@ from pypresence.presence import AioPresence
 from pypresence.types import ActivityType
 from configuration import config_folder
 from pathlib import Path
+from logs import logger
 import asyncio
 import util
 import time
@@ -18,7 +19,7 @@ async def initialize_rpc(event):
     app_id = cfg_file["discord"]["app_id"]
     RPC = AioPresence(app_id)
     await RPC.connect()
-    print("connected rpc")
+    logger.info("RPC Initialized")
     event.set()
     return RPC
 
@@ -52,6 +53,7 @@ async def rpc_loop(event, RPC):
         file_hash = xxhash.xxh64(Path(cover_path).read_bytes()).hexdigest()
         cache = diskcache.Cache("./cache")
         if file_hash in cache:
+            logger.debug("Fetching cover from cache.")
             data = json.loads(str(cache.get(file_hash)))
             cover_url = data.get("cover_url")
         else:
@@ -65,4 +67,5 @@ async def rpc_loop(event, RPC):
                          start=time.time() - position,
                          end=time.time() + int(song_length) - position,
                          activity_type=ActivityType.LISTENING)
+        logger.info(f"Updated RPC to {song_artist} - {song_title}")
         await asyncio.sleep(5)

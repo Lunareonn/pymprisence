@@ -1,3 +1,4 @@
+from logs import logger
 import asyncio
 import presence
 import configuration
@@ -13,4 +14,5 @@ async def main():
     await asyncio.Future()
 
 if __name__ == "__main__":
+    logger.debug("Starting...")
     asyncio.run(main())

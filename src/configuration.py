@@ -1,3 +1,4 @@
+from logs import logger
 import toml
 import os
 
@@ -15,6 +16,7 @@ async def generate_config():
     if await check_config() is True:
         return
     else:
+        logger.info("Configuration file not found. Generating...")
         if not os.path.isdir(os.path.join(config_folder, "pymprisence")):
             os.makedirs(os.path.join(config_folder, "pymprisence"))
 
@@ -22,3 +24,4 @@ async def generate_config():
             default_config = toml.load(dcfg)
         with open(os.path.join(config_folder, "pymprisence", "config.toml"), "w+") as cfg:
             toml.dump(default_config, cfg)
+        logger.info(f"Configuration file generated at {config_folder}/pymprisence/config.toml")
