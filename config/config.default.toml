@@ -11,6 +11,13 @@ interval = 10
 #   "competing"
 activity_type = "listening"
 
+[logger]
+# File logger level. Debug logs can get big over time.
+# Accepted values:
+#   "INFO"
+#   "DEBUG"
+logging_level = "INFO"
+
 [cover_art]
 # This is required to show cover art.
 # Get an api key from: https://api.imgbb.com/
