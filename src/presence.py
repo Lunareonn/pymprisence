@@ -63,6 +63,8 @@ async def rpc_loop(RPC):
         sanitized_player = util.sanitize_player_name(player)
 
         activity_type = activity_type_map.get(cfg_file["player"][sanitized_player]["activity_type"], None)
+        if activity_type is None:
+            activity_type = activity_type_map.get(cfg_file["player"]["default"]["activity_type"])
 
         current_song = util.get_trackid(player)
         if current_song == last_song:
@@ -74,7 +76,7 @@ async def rpc_loop(RPC):
         state = util.get_state(player)
         if state in ["Paused", "Stopped"]:
             await RPC.clear()
-            await asyncio.sleep(5)
+            await asyncio.sleep(interval)
             continue
 
         song_title, song_artist, song_length, cover_path = util.get_metadata(player)

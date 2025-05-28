@@ -3,13 +3,6 @@
 app_id = "your_app_id"
 # How often the presence updates. Min: 5 | Default: 10
 interval = 10
-# Default activity type. You can override this per-player. Default: listening
-# Accepted values:
-#   "listening"
-#   "watching"
-#   "playing"
-#   "competing"
-activity_type = "listening"
 
 [logger]
 # File logger level. Debug logs can get big over time.
@@ -29,9 +22,14 @@ imgbb_api_key = "api_key_here"
 # Accepted fields:
 #   ignore: Ignore (or don't) specified player
 #   activity_type: Player specific activity type.
+#       "listening"
+#       "watching"
+#       "playing"
+#       "competing"
 #
 # Use "pymprisence -p" to see current players.
 ignore = true
+activity_type = "listening"
 
 [player.strawberry]
 ignore = false
