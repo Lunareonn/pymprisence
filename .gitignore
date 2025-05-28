@@ -4,3 +4,5 @@ cache/
 dist/
 build/
 *.pkg.tar.zst
+*.tar.gz
+pkg/
