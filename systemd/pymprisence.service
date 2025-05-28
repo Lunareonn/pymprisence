@@ -1,0 +1,12 @@
+[Unit]
+Description=MPRIS Discord Rich Presence application
+After=network.target_arch
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/pymprisence
+RestartSec=10
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
