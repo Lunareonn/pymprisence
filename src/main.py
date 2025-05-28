@@ -28,9 +28,8 @@ async def main():
 
     await configuration.generate_config()
 
-    event = asyncio.Event()
-    RPC = await presence.initialize_rpc(event)
-    asyncio.create_task(presence.rpc_loop(event, RPC))
+    RPC = await presence.wait_for_discord()
+    asyncio.create_task(presence.rpc_loop(RPC))
 
     await asyncio.Future()
 

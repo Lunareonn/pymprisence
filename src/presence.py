@@ -1,5 +1,6 @@
 from pypresence.presence import AioPresence
 from pypresence.types import ActivityType
+from pypresence.exceptions import DiscordNotFound, PipeClosed
 from configuration import config_folder
 from pathlib import Path
 from logs import logger
@@ -13,19 +14,32 @@ import tomllib
 import os
 
 
-async def initialize_rpc(event):
+async def initialize_rpc():
     with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
         cfg_file = tomllib.load(cfg)
     app_id = cfg_file["discord"]["app_id"]
     RPC = AioPresence(app_id)
-    await RPC.connect()
+
+    try:
+        await RPC.connect()
+    except DiscordNotFound:
+        logger.warning("Discord wasn't found! Waiting for discord to start...")
+        return None
+
     logger.info("RPC Initialized")
-    event.set()
     return RPC
 
 
-async def rpc_loop(event, RPC):
-    await event.wait()
+async def wait_for_discord():
+    while True:
+        RPC = await initialize_rpc()
+        if RPC:
+            return RPC
+
+        await asyncio.sleep(5)
+
+
+async def rpc_loop(RPC):
     last_song = None
 
     while True:
