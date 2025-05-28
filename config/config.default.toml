@@ -30,7 +30,7 @@ imgbb_api_key = "api_key_here"
 #   ignore: Ignore (or don't) specified player
 #   activity_type: Player specific activity type.
 #
-# Use "pymprisence -l" to see current players.
+# Use "pymprisence -p" to see current players.
 ignore = true
 
 [player.strawberry]
