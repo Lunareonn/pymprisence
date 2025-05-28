@@ -21,7 +21,7 @@ logging_level = "INFO"
 [cover_art]
 # This is required to show cover art.
 # Get an api key from: https://api.imgbb.com/
-# imgbb_api_key = "api_key_here"
+imgbb_api_key = "api_key_here"
 
 
 [player.default]
