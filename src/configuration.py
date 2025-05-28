@@ -21,7 +21,7 @@ async def generate_config():
             os.makedirs(os.path.join(config_folder, "pymprisence"))
 
         with open("./config/config.default.toml", "r+") as dcfg:
-            default_config = toml.load(dcfg)
+            default_config = dcfg.read()
         with open(os.path.join(config_folder, "pymprisence", "config.toml"), "w+") as cfg:
-            toml.dump(default_config, cfg)
+            cfg.write(default_config)
         logger.info(f"Configuration file generated at {config_folder}/pymprisence/config.toml")
