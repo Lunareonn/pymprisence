@@ -65,9 +65,6 @@ def check_if_ignored(player) -> bool:
 
     sanitized_player = sanitize_player_name(player)
 
-    if sanitized_player == "playerctld":
-        return True
-
     try:
         if cfg_file["player"][sanitized_player]["ignore"] is True:
             logger.debug(f"{sanitized_player} is ignored.")
