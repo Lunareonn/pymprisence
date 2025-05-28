@@ -1,5 +1,4 @@
 from logs import logger
-import toml
 import os
 
 config_folder = os.path.join(os.path.expanduser("~"), ".config")
