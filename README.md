@@ -1,11 +1,11 @@
 # Pymprisence | Discord Rich Presence for MPRIS
 
-Dependencies:
+## Dependencies
 - Python 3
 - Systemd
 - MPRIS
 
-Arch based systems:<br>
+Arch Linux:<br>
 ```sudo pacman -S mpris python3```
 
 ## Building and installing
