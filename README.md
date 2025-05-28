@@ -6,7 +6,7 @@
 - MPRIS
 
 Arch Linux:<br>
-```sudo pacman -S mpris python3```
+```sudo pacman -S python3```
 
 ## Building and installing
 ```
