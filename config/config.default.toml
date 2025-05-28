@@ -1,6 +1,6 @@
 [discord]
 # Your app id. THIS IS REQUIRED!
-app_id = 1366680558775570504
+app_id = "your_app_id"
 # How often the presence updates. Min: 5 | Default: 10
 interval = 10
 # Default activity type. You can override this per-player. Default: listening
