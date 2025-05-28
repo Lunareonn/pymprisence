@@ -6,4 +6,5 @@ diskcache
 aiohttp
 xxhash
 toml
+pyinstaller
 https://github.com/qwertyquerty/pypresence/archive/master.zip
