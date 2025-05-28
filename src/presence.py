@@ -23,7 +23,7 @@ async def initialize_rpc():
     try:
         await RPC.connect()
     except DiscordNotFound:
-        logger.warning("Discord wasn't found! Waiting for discord to start...")
+        logger.warning("Discord wasn't found! Waiting like a good boy...")
         return None
 
     logger.info("RPC Initialized")
@@ -40,17 +40,23 @@ async def wait_for_discord():
 
 
 async def rpc_loop(RPC):
+    with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
+        cfg_file = tomllib.load(cfg)
+
     last_song = None
+    interval = cfg_file["discord"]["interval"]
+    if interval < 5:
+        interval = 5
 
     while True:
         player = await util.get_current_player()
         if player is None:
-            await asyncio.sleep(5)
+            await asyncio.sleep(interval)
             continue
 
         current_song = util.get_trackid(player)
         if current_song == last_song:
-            await asyncio.sleep(5)
+            await asyncio.sleep(interval)
             continue
 
         last_song = current_song
@@ -85,4 +91,4 @@ async def rpc_loop(RPC):
         except PipeClosed:
             await wait_for_discord()
         logger.info(f"Updated RPC to {song_artist} - {song_title}")
-        await asyncio.sleep(5)
+        await asyncio.sleep(interval)
