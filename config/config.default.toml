@@ -9,7 +9,8 @@ interval = 10
 # Accepted values:
 #   "INFO"
 #   "DEBUG"
-logging_level = "INFO"
+file_logging_level = "INFO"
+console_logging_level = "INFO"
 
 [cover_art]
 # This is required to show cover art.
