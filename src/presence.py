@@ -75,11 +75,14 @@ async def rpc_loop(RPC):
                 cover_path, song_title, song_artist))
             cover_url = await uploader_task
 
-        await RPC.update(details=song_title,
-                         state=song_artist,
-                         large_image=cover_url,
-                         start=time.time() - position,
-                         end=time.time() + int(song_length) - position,
-                         activity_type=ActivityType.LISTENING)
+        try:
+            await RPC.update(details=song_title,
+                             state=song_artist,
+                             large_image=cover_url,
+                             start=time.time() - position,
+                             end=time.time() + int(song_length) - position,
+                             activity_type=ActivityType.LISTENING)
+        except PipeClosed:
+            await wait_for_discord()
         logger.info(f"Updated RPC to {song_artist} - {song_title}")
         await asyncio.sleep(5)
