@@ -98,8 +98,11 @@ async def cache_cover(file: str, url: str):
     logger.debug(f"Cached hash. Cached data: {json.dumps(data_json)}")
 
 
-async def upload_imgbb(file: str, track: str, artist: str) -> str:
-    api_key = "d62a1f991e1c733a1d39afb9854802c7"
+async def upload_imgbb(file: str, track: str, artist: str) -> str | None:
+    with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
+        cfg_file = tomllib.load(cfg)
+
+    api_key = cfg_file["cover_art"]["imgbb_api_key"]
     url = "https://api.imgbb.com/1/upload"
 
     async with aiohttp.ClientSession() as session:
@@ -111,6 +114,9 @@ async def upload_imgbb(file: str, track: str, artist: str) -> str:
 
         logger.debug("Uploading cover to imgbb")
         async with session.post(url, data=payload) as response:
+            if response.status == 400:
+                logger.warning("Upload failed! 400 Bad Request from ImgBB. Check your API Key.")
+                return None
             data = await response.json()
             logger.debug(f"Uploaded cover. {data["data"]["image"]["url"]}")
             await cache_cover(file, data["data"]["image"]["url"])
