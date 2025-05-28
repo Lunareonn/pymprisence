@@ -3,3 +3,4 @@ cache/
 *.log
 dist/
 build/
+*.pkg.tar.zst
