@@ -48,11 +48,21 @@ async def rpc_loop(RPC):
     if interval < 5:
         interval = 5
 
+    activity_type_map = {
+        "listening": ActivityType.LISTENING,
+        "watching": ActivityType.WATCHING,
+        "competing": ActivityType.COMPETING,
+        "playing": ActivityType.PLAYING,
+    }
+
     while True:
         player = await util.get_current_player()
         if player is None:
             await asyncio.sleep(interval)
             continue
+        sanitized_player = util.sanitize_player_name(player)
+
+        activity_type = activity_type_map.get(cfg_file["player"][sanitized_player]["activity_type"], None)
 
         current_song = util.get_trackid(player)
         if current_song == last_song:
@@ -87,7 +97,7 @@ async def rpc_loop(RPC):
                              large_image=cover_url,
                              start=time.time() - position,
                              end=time.time() + int(song_length) - position,
-                             activity_type=ActivityType.LISTENING)
+                             activity_type=activity_type)
         except PipeClosed:
             await wait_for_discord()
         logger.info(f"Updated RPC to {song_artist} - {song_title} (Player: {player})")
