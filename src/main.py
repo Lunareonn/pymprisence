@@ -10,6 +10,7 @@ import sys
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-p", "--players", help="List available MPRIS players", action="store_true")
+    parser.add_argument("--clear-cache", help="Clear ImgBB link cache.", action="store_true")
     args = parser.parse_args()
 
     return args
@@ -24,6 +25,9 @@ async def main():
         for player in players:
             sanitized_player = util.sanitize_player_name(player)
             print("-", sanitized_player)
+        sys.exit(0)
+    if args.clear_cache:
+        await util.clear_cache()
         sys.exit(0)
 
     await configuration.generate_config()

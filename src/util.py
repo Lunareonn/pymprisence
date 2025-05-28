@@ -98,6 +98,14 @@ async def cache_cover(file: str, url: str):
     logger.debug(f"Cached hash. Cached data: {json.dumps(data_json)}")
 
 
+async def clear_cache():
+    cleared = cache.clear()
+    if cleared == 0:
+        print("Nothing to clear.")
+        return
+    print(f"Cleared {cleared} items from cache.")
+
+
 async def upload_imgbb(file: str, track: str, artist: str) -> str | None:
     with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
         cfg_file = tomllib.load(cfg)
