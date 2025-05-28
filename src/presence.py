@@ -90,5 +90,5 @@ async def rpc_loop(RPC):
                              activity_type=ActivityType.LISTENING)
         except PipeClosed:
             await wait_for_discord()
-        logger.info(f"Updated RPC to {song_artist} - {song_title}")
+        logger.info(f"Updated RPC to {song_artist} - {song_title} (Player: {player})")
         await asyncio.sleep(interval)
