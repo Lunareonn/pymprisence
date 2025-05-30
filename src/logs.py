@@ -5,6 +5,8 @@ import tomllib
 
 home_folder = os.path.expanduser("~")
 os.makedirs(os.path.join(home_folder, ".pymprisence", "logs"), exist_ok=True)
+console_logger_level = None
+file_logger_level = None
 
 try:
     with open(os.path.join(home_folder, ".config", "pymprisence", "config.toml"), "rb") as cfg:
