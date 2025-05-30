@@ -1,6 +1,6 @@
 from pypresence.presence import AioPresence
 from pypresence.types import ActivityType
-from pypresence.exceptions import DiscordNotFound, PipeClosed
+from pypresence.exceptions import DiscordNotFound, PipeClosed, InvalidID
 from configuration import config_folder
 from pathlib import Path
 from logs import logger
@@ -12,6 +12,7 @@ import json
 import xxhash
 import tomllib
 import os
+import sys
 
 
 async def initialize_rpc():
@@ -25,6 +26,9 @@ async def initialize_rpc():
     except DiscordNotFound:
         logger.warning("Discord wasn't found! Waiting like a good boy...")
         return None
+    except InvalidID:
+        logger.error("Invalid App ID! If this is your first time running pymprisence, add your app ID to the config.")
+        sys.exit(0)
 
     logger.info("RPC Initialized")
     return RPC
