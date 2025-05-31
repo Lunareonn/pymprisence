@@ -111,11 +111,15 @@ async def upload_imgbb(file: str, track: str, artist: str) -> str | None:
     url = "https://api.imgbb.com/1/upload"
 
     async with aiohttp.ClientSession() as session:
-        with open(str(file), "rb") as img:
-            payload = {
-                "key": api_key,
-                "image": base64.b64encode(img.read()).decode(),
-            }
+        try:
+            with open(str(file), "rb") as img:
+                payload = {
+                    "key": api_key,
+                    "image": base64.b64encode(img.read()).decode(),
+                }
+        except FileNotFoundError as err:
+            logger.error(err)
+            return None
 
         logger.debug("Uploading cover to imgbb")
         async with session.post(url, data=payload) as response:
