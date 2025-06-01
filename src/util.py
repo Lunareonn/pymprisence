@@ -12,7 +12,8 @@ import os
 import aiohttp
 import re
 
-cache = Cache("./cache")
+home_folder = os.path.expanduser("~")
+os.makedirs(os.path.join(home_folder, ".pymprisence", "cache"), exist_ok=True)
 
 
 def sanitize_player_name(player: str) -> str:
@@ -82,6 +83,7 @@ def check_if_ignored(player) -> bool:
 
 
 async def cache_cover(file: str, url: str):
+    cache = Cache(os.path.join(home_folder, ".pymprisence", "cache"))
     hasher = xxhash.xxh64()
     with open(str(file), "rb") as f:
         while chunk := f.read(1048576):
@@ -96,6 +98,7 @@ async def cache_cover(file: str, url: str):
 
 
 async def clear_cache():
+    cache = Cache(os.path.join(home_folder, ".pymprisence", "cache"))
     cleared = cache.clear()
     if cleared == 0:
         print("Nothing to clear.")
