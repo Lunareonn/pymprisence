@@ -58,6 +58,7 @@ async def rpc_loop(RPC):
         "competing": ActivityType.COMPETING,
         "playing": ActivityType.PLAYING,
     }
+    home_folder = os.path.expanduser("~")
 
     while True:
         player = await util.get_current_player()
@@ -91,7 +92,7 @@ async def rpc_loop(RPC):
         position = util.get_position(player)
 
         file_hash = xxhash.xxh64(Path(cover_path).read_bytes()).hexdigest()
-        cache = diskcache.Cache("./cache")
+        cache = diskcache.Cache(os.path.join(home_folder, ".pymprisence", "cache"))
         if file_hash in cache:
             logger.debug("Fetching cover from cache.")
             data = json.loads(str(cache.get(file_hash)))
