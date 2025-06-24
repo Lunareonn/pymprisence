@@ -92,7 +92,7 @@ async def cache_cover(file: str, url: str):
         logger.debug(f"Hashed cover. Cover hash: {hasher.hexdigest()}")
     except FileNotFoundError as err:
         logger.error("Could not cache cover:", err)
-        return
+        return None
 
     data_json = {
         "cover_url": url
