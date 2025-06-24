@@ -47,7 +47,6 @@ async def rpc_loop(RPC):
     with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
         cfg_file = tomllib.load(cfg)
 
-    last_song = None
     interval = cfg_file["discord"]["interval"]
     if interval < 5:
         interval = 5
@@ -79,14 +78,6 @@ async def rpc_loop(RPC):
             await RPC.clear()
             await asyncio.sleep(interval)
             continue
-
-        logger.debug("Checking current song")
-        current_song = util.get_trackid(player)
-        if current_song == last_song:
-            await asyncio.sleep(interval)
-            continue
-
-        last_song = current_song
 
         song_title, song_artist, song_length, cover_path = util.get_metadata(player)
         position = util.get_position(player)
