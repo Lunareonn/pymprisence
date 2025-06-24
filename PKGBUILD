@@ -1,5 +1,5 @@
 pkgname=pymprisence
-pkgver=1.1.1
+pkgver=1.1.2
 pkgrel=1
 arch=('x86_64')
 license=('MIT')
