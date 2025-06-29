@@ -19,6 +19,7 @@ async def initialize_rpc():
     with open(os.path.join(config_folder, "pymprisence", "config.toml"), "rb") as cfg:
         cfg_file = tomllib.load(cfg)
     app_id = cfg_file["discord"]["app_id"]
+    global RPC
     RPC = AioPresence(app_id)
 
     try:
@@ -41,6 +42,18 @@ async def wait_for_discord():
             return RPC
 
         await asyncio.sleep(5)
+
+
+async def update_rpc(song_title: str, song_artist: str, cover_url: str | None, position: int, song_length: int, activity_type: ActivityType):
+    try:
+        await RPC.update(details=song_title,
+                         state=song_artist,
+                         large_image=cover_url,
+                         start=time.time() - position,
+                         end=time.time() + int(song_length) - position,
+                         activity_type=activity_type)
+    except PipeClosed:
+        await wait_for_discord()
 
 
 async def rpc_loop(RPC):
@@ -82,25 +95,8 @@ async def rpc_loop(RPC):
         song_title, song_artist, song_length, cover_path = util.get_metadata(player)
         position = util.get_position(player)
 
-        file_hash = xxhash.xxh64(Path(cover_path).read_bytes()).hexdigest()
-        cache = diskcache.Cache(os.path.join(home_folder, ".pymprisence", "cache"))
-        if file_hash in cache:
-            logger.debug("Fetching cover from cache.")
-            data = json.loads(str(cache.get(file_hash)))
-            cover_url = data.get("cover_url")
-        else:
-            uploader_task = asyncio.create_task(util.upload_imgbb(
-                cover_path, song_title, song_artist))
-            cover_url = await uploader_task
+        cover_url = await util.check_if_cover_cached(cover_path, song_title, song_artist)
 
-        try:
-            await RPC.update(details=song_title,
-                             state=song_artist,
-                             large_image=cover_url,
-                             start=time.time() - position,
-                             end=time.time() + int(song_length) - position,
-                             activity_type=activity_type)
-        except PipeClosed:
-            await wait_for_discord()
+        await update_rpc(song_title, song_artist, cover_url, position, song_length, activity_type)
         logger.info(f"Updated RPC to {song_artist} - {song_title} (Player: {player})")
         await asyncio.sleep(interval)

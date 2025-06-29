@@ -31,6 +31,7 @@ async def main():
         await util.clear_cache()
         sys.exit(0)
 
+    await init_listener_thread()
     await configuration.generate_config()
 
     RPC = await presence.wait_for_discord()
@@ -40,5 +41,4 @@ async def main():
 
 if __name__ == "__main__":
     logger.debug("Starting...")
-    init_listener_thread()
     asyncio.run(main())
