@@ -1,4 +1,5 @@
 from logs import logger
+from signal_handler import init_listener_thread
 import asyncio
 import presence
 import configuration
@@ -39,4 +40,5 @@ async def main():
 
 if __name__ == "__main__":
     logger.debug("Starting...")
+    init_listener_thread()
     asyncio.run(main())
