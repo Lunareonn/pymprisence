@@ -1,7 +1,9 @@
 from configuration import config_folder
 from dbus_connection import DBusSession
 from diskcache import Cache
+from pathlib import Path
 from logs import logger
+import asyncio
 import dbus
 import base64
 import urllib.parse
@@ -11,6 +13,7 @@ import xxhash
 import os
 import aiohttp
 import re
+import diskcache
 
 home_folder = os.path.expanduser("~")
 os.makedirs(os.path.join(home_folder, ".pymprisence", "cache"), exist_ok=True)
@@ -154,6 +157,21 @@ def get_metadata(player) -> tuple:
     logger.debug(f"Fetched metadata: {song_artist} - {song_title} ({song_length}s)")
     logger.debug(f"Cover path: {cover_path}")
     return song_title, song_artist, song_length, cover_path
+
+
+async def check_if_cover_cached(cover_path, song_title, song_artist):
+    file_hash = xxhash.xxh64(Path(cover_path).read_bytes()).hexdigest()
+    cache = diskcache.Cache(os.path.join(home_folder, ".pymprisence", "cache"))
+    if file_hash in cache:
+        logger.debug("Fetching cover from cache.")
+        data = json.loads(str(cache.get(file_hash)))
+        cover_url = data.get("cover_url")
+        return cover_url
+    else:
+        uploader_task = asyncio.create_task(upload_imgbb(
+            cover_path, song_title, song_artist))
+        cover_url = await uploader_task
+        return cover_url
 
 
 def get_position(player) -> int:
